@@ -1,0 +1,44 @@
+=======================assignment day 3=============================
+
+=========JOINS========
+1.select description,qty_disp,dely_date 
+  from product_master p,sales_order_details,sales_order;
+
+2.select p.product_no,qty_disp 
+  from product_master p,sales_order_details;
+ 
+3.select a.ename,b.ename mgr
+from emp a, emp b
+where a.mgr = b.empno;
+
+4. select a.ename,b.ename mgr
+from emp a, emp b
+where a.mgr = b.empno order by a.ename;
+
+5.
+
+6.select e.deptno,dname, ename 
+from emp e,dept;
+
+7. select d.deptno from dept d, emp e  where emp.deptno != d.deptno;
+
+8.select * 
+from emp 
+where deptno = (select deptno from emp where ename='SMITH') and ename != 'SMITH'; 
+
+9.select ename ,deptno, sal from emp a where sal >
+(select avg (sal) from emp b 
+where deptno=(select deptno from emp where ename ='SMITH') );
+
+10. select 
+
+
+
+
+
+
+
+
+====JOiN subquery=======
+1. select ename,sal , dname from emp e,dept d where sal=(select min(sal) from emp) and e.deptno= d.deptno;
+2. select deptno,sal as min_sal from emp where sal=(select min(sal) from emp);

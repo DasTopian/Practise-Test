@@ -1,0 +1,1345 @@
+----order by-----
+->display on basic of ename desc
+select  ename , deptno, sal from emp order by ename desc;
+->display on basic of sal
+select  ename , deptno, sal from emp order by sal;
+select deptno, count(deptno) from emp group by deptno;
+
+
+display deptno for which total sal for the dept is greater than 10000
+select deptno,  sum(sal) from emp group by deptno having sum(sal)>1000;
+
+create table pr_dept (
+deptno number(2),
+dname varchar2(14),
+loc varchar2(13));
+insert into pr_dept values(10,'Account','new york');
+
+------------character function-----
+
+select upper('priti') from dual;
+select initcap('pritit dalvi') from dual;
+select lower('PRITI') from dual;
+select lower(upper(initcap(ename))) from emp;
+select ename,length(ename) from emp;
+select ename, substr(ename,1,3) from emp;
+select '   priti' from dual;
+select ltrim('    priti') from dual;
+select rtrim('    priti ') from dual;
+select trim('    priti ') from dual;
+select lpad('priti',10,'*') from dual;
+select replace('Cap','C','M') from dual;
+
+
+-----date data type function-----
+
+select sysdate from dual;
+select add_months(sysdate,2) from dual;
+select next_day(sysdate,'monday') from dual;
+select next_day(sysdate,'tuesday') from dual;
+select last_day(sysdate) from dual;
+select months_between(sysdate,'27-Jun-2019') from dual;
+
+---emp experience----
+
+select ename , round (months_between(sysdate,hiredate)/12) from emp;
+
+---------------------------------------------------------------------------------------------
+character fun----
+instr() :: to find position of character
+
+--- find posittion of L
+select ename. instr(ename,'L') from emp;
+select ename. instr(ename,'L',1,1) from emp;
+1 : start
+1 : occurance
+
+find 2nd L posititon------
+select ename. instr(ename,'L',1,2) from emp;
+
+select instr('priti','i',1,2) from dual;
+
+i= word we need to search
+-------------------------------------------------------------------------------------------------
+
+different key
+1 pk
+2 fk
+3 uk
+4 candidate key : are the columns where the data is not repeating, it should not have null value. 
+5 alternate key  : in given table we have 3 candidate key in which one is pk and rest are alternate key. 
+candidate key which are not pk.
+6 composite key  : 
+
+dept
+deptno   dname      loc
+10       acc        mum
+20       mkt        pune
+30       fin        hyd
+40       sales      bang
+ 
+---composite key => it's a primary key which is a combination of 2 or more columns.
+empleave
+empno           stdate        enddate
+1              10-Jan-18       10-Jan-18
+2              10-Jan-18       10-Jan-18
+1              13-Feb-18       15-Feb-18  
+
+pk==  empno + stdate
+
+--------------------------------------------------------------------------------------------------------------------
+----------data types ---------
+
+char is faster to read than varchar due to it's fixed length. 
+number(p,s) 
+where p=presigion. total length
+s=scale
+lob= large object
+long : in one table we have only 1 long.
+raw (n): where we want to use signature/ scanned signature.
+
+lob= large object
+
+types
+BLOB :  Binary large obj : we can store images, audio , video filesd
+CLOB : Character large obj: we can store character data only
+NCLOB : national character large obj : we need to store data other than english
+Bfile : binary file ; it stored outside db --- 
+we store the files outside the database and create a directory to call that files .
+it act's like a pointer to call the file. 
+It used to refer files in doc, xls, excel,ppt,pdf format.
+
+Note ::all have size of 4gb.
+
+---------------------------------------------------------------------------------------
+-----is null---
+when we want to get the values which are null.
+it's a predicate
+
+select ename ,comm from emp where comm is null;=> to get null values
+select ename ,comm from emp where comm is not null;=> to get not null values
+
+--------------------------------------------------------------------
+
+-----data model
+1. Hierarchy model
+we have parent child relation
+tree diagram
+relationship : 1-1, 1-many
+easy to understand
+dis adv
+no many to many relationship
+
+2. Network Model
+all relation are possible : 1-1, 1- many and many to many,
+joins the nodes
+disadv - when the no of records are more it is difficult to understand
+pointer concept used
+
+adv
+many to many relation possible
+
+3. Relational model
+organised in form of table
+all relations are there
+easy to understand
+12 rules are given by Dr. E.F. codd
+
+
+-------Integrity constraints-----
+1. Entity Integrity : PK
+2. Referential Integrity : fk
+3. domain Integrity : check constaint : e.g. salry should be greater than 10k so domain is 10k.
+set of permisible values is called domain.
+
+-------------------------------------------------------------------------------
+
+------Normalization----------
+it is data design technique
+it is used to remove redundant data
+we divide 1 table into 2 or more using normalization
+the database designer and database architecture use this process 
+it is conceptual
+
+there are 5 normal forms
+1NF : if and only if all its attributes assume only atomic values.
+2NF : if and only if it is in 1NF every non key attribute should be fully functionally depend upon pk
+       function dependancy
+3NF : remove the transitive dependency
+4NF
+5Nf
+special normal form BCNF (Boyce codd normal form)
+Normalization is followed before creating tables
+the data will be in reliable state using normalization.
+
+
+-----BCNF----
+rules
+1 there should be multiple pk
+2. pk should be composite
+3 pk should be overlapping
+
+---------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
+-
+----TCL
+transaction control lang
+commit : details save permanently over the server
+         the other sessions can see the changes made
+
+rollback : uses the savepoint.
+affect dml (insert , update ,delete), 
+it rollback to recent ddl command or commit command
+
+savepoint : it is used to create bookmark.
+
+---------for commit, savepoint, rollback----
+create table emp2 (
+empno number(38),
+ename varchar2(40)
+);
+
+insert into emp2 values(13,'hardy');
+insert into emp2 values(7,'harsh');
+insert into emp2 values(5,'harsha');
+savepoint a;
+select * from emp2;
+insert into emp2 values(16,'harshly');
+insert into emp2 values(17,'harshhja');
+savepoint b;
+select * from emp2;
+insert into emp2 values(18,'soumya');
+insert into emp2 values(19,'neha');
+rollback to b;
+select * from emp2;
+insert into emp2 values(6,'harsh');
+insert into emp2 values(55,'harsha');
+rollback to a;
+select * from emp2;
+insert into emp2 values(66,'harshluhg');
+insert into emp2 values(555,'harshafss');
+commit;
+select * from emp2;
+-----------------------------------------------------------------------------------
+
+------------ways to insert records----------------
+
+
+1.
+insert into emp2 values (455, null);
+insert into emp2 values(55,'harsha');
+2. 
+insert into emp2(empno,ename) values (455,'varun');
+3.
+insert into emp2 values (&empno,'&ename');
+
+---------------------------------------------------------------------------------------------
+
+---conversion function----------
+1. to_number() : to convert into string number data type
+2. to_date() : to convert string into date type
+3. to_char() : to format the date
+
+---1
+select to_number('676.50','999.99') from dual;
+                    1       2
+select to_number('6767','9999') from dual;
+1: value
+2: format
+
+---2 
+select to_date ('2019-jan-20','yyyy-mon-dd') from dual;
+it gives date in system format
+1: value
+2: format
+select to_date ('20201904','ddyyyymm') from dual;
+select to_date ('20/2019/04','dd/yyyy/mm') from dual;
+
+----3
+to_char(1,2)
+1: value
+2: format
+it will work with coloums as well
+select to_char(sysdate,'dd/mm/yyyy') from dual;
+
+select to_char(sysdate,'yyyy-mm-dd') from dual;
+
+select to_char(sysdate,'dd/mm/yyyy hh: mi:ss') from dual;
+select to_char(sysdate,'mm') from dual;
+select to_char(sysdate,'mon') from dual;
+
+-------------------------------------------------------------------------------
+----------concatination of string------------------
+select 'today is ' || to_char(sysdate,'dd/mm/yyyy hh: mi:ss') from dual;
+
+Q smith earning is 800 and joined on date
+
+select ename || ' earning is ' || sal ||' joined on ' || to_char(hiredate,'dd-mon-yy ') from emp;
+-----------------------------------------------------------------------------
+
+------DCL
+grant : to give permission to user
+revoke : to take back the permission
+
+priti                  uma
+emp1(100 records)------->
+
+grant all on emp1 to uma;
+             table   user
+all means to give all permission
+
+grant select,insert,update on emp1 to uma;
+give certain privlages.
+
+---
+revoke update on emp1 from uma;
+revoke all on emp1 from uma;
+
+
+----------------------------------------------
+---constraints---
+1 primary key
+2 fk
+3 uk
+4 not null
+5 check
+
+truncate table emp1;
+insert into emp1 values(1,'beena',3000);
+insert into emp1 values(1,'heena',3000);
+
+---how to give constrain name
+-------- primary key
+create table emp1(
+empno int constarint empno_pk primary key,
+ename varchar2(20),
+sal number(10,2)
+) ;
+
+------not null
+create table emp1(
+empno int constraint empno_pk primary key,
+ename varchar2(20) not null,
+sal number(10,2) not null
+) ;
+
+--------how to drop constraints-------
+drop table emp1 cascade constraints;
+
+
+---------------------------------------------
+create table dept_pr(
+deptno int constraint deptno_pk primary key,
+dname varchar2(20) not null,
+loc varchar2(20) not null
+);
+
+insert into dept_pr values(1,'operation','mumbai');
+
+create table pr_emp(
+empno varchar2(4) constraint empno_pk2 primary key
+constraint empno_ck check (empno like 'e%'),
+ename varchar2(20) not null,
+pancard varchar2(20) constraint pan_uk unique,
+sal number(10,2) constraint sal_ck check(sal>10000),
+city varchar2(20) default 'mum'
+constraint city_ck check(city in('mum','bang','che','rajs')),
+deptno number(2) constraint deptno_fk references dept_pr(deptno));
+
+insert into pr_emp values ('e001','eee','p001',5666,default,20);
+
+-------------------------------------------------------
+create table emp_leave(
+empno int,
+stdate date,
+enddate date, constraint empno_st primary key(empno,stdate),
+constraint empno_st_ck check(stdate<=enddate));
+
+insert into emp_leave values(1,'1-jan-19','4-jan-19');
+-------------------------------------------------------------
+select ename || ' joined on the ' || to_char(hiredate,'ddth month year')
+from emp;
+
+
+--alter command
+used to change the structure of the table
+--eg
+1 add a col
+2 drop a col
+3 add a constraint
+4 drop a constraint
+5 disable constraint
+6 enable a constraint
+7 rename a table
+8 rename a col
+9 modify the size of the col
+------------------------------
+--add a col
+alter table emp2
+add (comm number(10,2));
+-------------------------------
+--modify the size of the col
+
+alter table emp2
+modify (ename varchar2(40));
+-------------------------------
+--drop a table
+
+alter table emp2
+drop column comm;
+-------------------------------
+---to get the name of the constraint
+select constraint_name,constraint_type
+from user_constraints
+where table_name='pr_emp';
+
+USER_CONSTRAINTS- dummy table like dual
+
+alter table emp1
+drop constraint empno_pk; 
+
+
+--add constraint
+alter table pr_emp
+add constraint pan_uk unique (pancard);
+
+--disable constraint
+alter table pr_emp
+disable constraint pan_uk;
+-----------------------------------------------------
+--database objects
+1 table
+
+2 index  
+	it is separately stored on the db server where the data is sorted
+	where clause using index
+	searching will be faster using the index
+	for a pk and uk the index is automatically created
+
+--type of index : asc,desc
+
+--syntax
+create index ename_id on emp(ename);
+
+-- dropping index
+drop index ename_id;
+
+-------type of index----------
+hunt assignment
+bitmap index
+hash index
+composite index
+
+----------------------------------------- 
+=================================================================================
+=================================================day 3============================
+====================================================================================
+
+3 view
+
+it is logical or virtual table
+it dependents on the main table
+used for security purpose 
+we can create view using 1 or more table
+dml operations can be performed
+
+--------how to create view---------
+create view v1 
+as 
+select empno,ename,sal 
+from emp where deptno=10;
+
+create  or replace view v1 
+as 
+select empno,ename,sal,deptno 
+from emp where deptno=10;
+
+or replace is used if view is already there it replace it.
+
+insert into v1 values (112,'tyghd',2101);
+
+----how to retrieve data from view-----
+select * from v1;
+
+
+4 sequence
+it is database obj used to generate sequence of numbers
+used for empno col, custcode col
+1
+2
+3
+4
+...100
+steps 
+--1
+
+create table emp3(
+empno int,
+ename varchar2(20),
+sal number(10,2)
+);
+--2
+create sequence seq1
+start with 1
+increment by 1;
+---3
+insert into emp3 values (seq1.nextval,'pr',20000);
+/
+
+---to display last value generated----
+select seq1.currval from dual;
+if we are using currval with table it give the last value per record which consume large memeory.
+ 
+5 synonyms
+
+it is secondary name given to table or a view 
+or a short name
+create synonym e for employees;
+select * from e;
+drop synonym e;
+
+
+
+
+
+======================================================================================
+
+--------------------------SubQuery---------------------------------
+                   Q1(Q2)
+                   |  |
+                outer |
+                query |
+                      inner query
+
+subquery is query with in a query
+inner query is executed first, which will pass the values to the outer query
+
+---- display the name of employee who is doing the same job as smith----------
+select ename 
+from emp 
+where job=(select job 
+from emp 
+where ename='SMITH') and ename != 'SMITH';
+
+----dispaly the name of the employees whose sal is greater than the average salry of the table--
+
+
+select ename,deptno from emp where sal>(select avg(sal) from emp);
+
+------display the name of employee who is doing the same department as smith-----
+select ename 
+from emp 
+where deptno=(select deptno 
+from emp 
+where ename='MILLER') and ename != 'MILLER';
+
+-----------predicates------
+>all :  it gives maximum value
+<all
+<any : it gives minimum value
+>any
+
+--------display the name of employees whose sal is greater than salary of all the employee in dept 20
+select ename from emp where sal>all
+(select sal from emp where deptno=20);
+
+--------display the name of employees whose sal is greater than salary any of the employee in dept 20
+
+select ename from emp where sal>any
+(select sal from emp where deptno=20);
+lowest salary will not be displayed
+
+------------predicate : in--------------
+
+-----Q.  display the name of employees who is doing job same as that of smith and allen-------
+
+select ename from emp where job in
+(select job from emp where ename in ('SMITH','ALLEN'))
+and ename not in  ('SMITH','ALLEN');
+
+------co  related sub query---
+we use the same table in inner and outer query
+there should be 2 columns related inside the table , then only the co related sub query can be performed
+it creates the replica of the same table
+execution of the query is slow 
+co related sub query can not be performed  on all the tables
+
+
+---dispaly the name of the employees who earn more than his manager
+select a.ename from emp a 
+where a.sal > (select b.sal from emp b 
+where b.empno=a.mgr);
+
+ENAME
+----------
+SCOTT
+FORD
+
+---dispaly the name of the employees who earn lesser than his manager
+select a.ename from emp a 
+where a.sal < (select b.sal from emp b 
+where b.empno=a.mgr);
+
+--display the name of the employees who are junior than his manager
+
+select a.ename from emp a 
+where a.hiredate < (select b.hiredate from emp b 
+where b.empno=a.mgr);
+
+--dispaly the name of the employees who are scnior  than his manager
+select a.ename from emp a 
+where a.hiredate > (select b.hiredate from emp b 
+where b.empno=a.mgr);
+
+
+=============================================================================
+
+
+----------------------------joins----------------------------- 
+used to retrieve data from multiple tables
+
+types of joins 
+1.  inner join/natural join/ equi join
+2. Outer Join
+   left Outer Join
+   right Outer Join
+    full Outer Join
+3 cartesian join/ cross join
+4 self join
+5 non equi join
+
+---------cartesian join  -------
+
+t1
+c1        c2
+10        x
+20        y
+
+t2
+c3      c4     c5
+1       L       x
+2       M       y
+3       N       z
+
+rows : 2*3=6
+cols : 2+3=5
+
+
+c1       c2     c3      c4     c5
+10        x     1       L       x
+10        x     2       M       y
+10        x     3       N       z
+20        y     1       L       x
+20        y     2       M       y
+20        y     3       N       z
+
+
+---syntax---
+select * from emp
+  2  cross join dept;
+
+select empno, ename,sal, dname,loc,emp.deptno from emp cross join dept where (emp.deptno= dept.deptno);
+
+ EMPNO ENAME             SAL DNAME          LOC               DEPTNO
+---------- ---------- ---------- -------------- ------------- ----------
+      7369 SMITH             800 RESEARCH       DALLAS                20
+      7499 ALLEN            1600 SALES          CHICAGO               30
+      7521 WARD             1250 SALES          CHICAGO               30
+      7566 JONES            2975 RESEARCH       DALLAS                20
+      7654 MARTIN           1250 SALES          CHICAGO               30
+      7698 BLAKE            2850 SALES          CHICAGO               30
+      7782 CLARK            2450 ACCOUNTING     NEW YORK              10
+      7788 SCOTT            3000 RESEARCH       DALLAS                20
+      7839 KING             5000 ACCOUNTING     NEW YORK              10
+      7844 TURNER           1500 SALES          CHICAGO               30
+      7876 ADAMS            1100 RESEARCH       DALLAS                20
+      7900 JAMES             950 SALES          CHICAGO               30
+      7902 FORD             3000 RESEARCH       DALLAS                20
+      7934 MILLER           1300 ACCOUNTING     NEW YORK              10
+
+select empno, ename,sal, dname,loc from emp cross join dept where (emp.deptno= dept.deptno);
+
+   EMPNO ENAME             SAL DNAME          LOC
+---------- ---------- ---------- -------------- -------------
+      7369 SMITH             800 RESEARCH       DALLAS
+      7499 ALLEN            1600 SALES          CHICAGO
+      7521 WARD             1250 SALES          CHICAGO
+      7566 JONES            2975 RESEARCH       DALLAS
+      7654 MARTIN           1250 SALES          CHICAGO
+      7698 BLAKE            2850 SALES          CHICAGO
+      7782 CLARK            2450 ACCOUNTING     NEW YORK
+      7788 SCOTT            3000 RESEARCH       DALLAS
+      7839 KING             5000 ACCOUNTING     NEW YORK
+      7844 TURNER           1500 SALES          CHICAGO
+      7876 ADAMS            1100 RESEARCH       DALLAS
+      7900 JAMES             950 SALES          CHICAGO
+      7902 FORD             3000 RESEARCH       DALLAS
+      7934 MILLER           1300 ACCOUNTING     NEW YORK
+
+-----------------------------------------------------------------------------------------
+
+------inner join-------------------------
+
+it dispalys the common records
+
+in emp we have deptno  10,20,30
+in dept we have deptno  10,20,30,40
+
+emp 2 cols
+dept 2 cols
+
+
+select ename, sal, dname,loc,d.deptno
+from emp e, dept d
+where e.deptno = d.deptno;
+
+ENAME             SAL DNAME          LOC               DEPTNO
+---------- ---------- -------------- ------------- ----------
+SMITH             800 RESEARCH       DALLAS                20
+ALLEN            1600 SALES          CHICAGO               30
+WARD             1250 SALES          CHICAGO               30
+JONES            2975 RESEARCH       DALLAS                20
+MARTIN           1250 SALES          CHICAGO               30
+BLAKE            2850 SALES          CHICAGO               30
+CLARK            2450 ACCOUNTING     NEW YORK              10
+SCOTT            3000 RESEARCH       DALLAS                20
+KING             5000 ACCOUNTING     NEW YORK              10
+TURNER           1500 SALES          CHICAGO               30
+ADAMS            1100 RESEARCH       DALLAS                20
+JAMES             950 SALES          CHICAGO               30
+FORD             3000 RESEARCH       DALLAS                20
+MILLER           1300 ACCOUNTING     NEW YORK              10
+
+select ename, sal, dname,loc,d.deptno
+from emp e inner join dept d
+on e.deptno = 10;
+
+ENAME             SAL DNAME          LOC               DEPTNO
+---------- ---------- -------------- ------------- ----------
+SMITH             800 RESEARCH       DALLAS                20
+ALLEN            1600 SALES          CHICAGO               30
+WARD             1250 SALES          CHICAGO               30
+JONES            2975 RESEARCH       DALLAS                20
+MARTIN           1250 SALES          CHICAGO               30
+BLAKE            2850 SALES          CHICAGO               30
+CLARK            2450 ACCOUNTING     NEW YORK              10
+SCOTT            3000 RESEARCH       DALLAS                20
+KING             5000 ACCOUNTING     NEW YORK              10
+TURNER           1500 SALES          CHICAGO               30
+ADAMS            1100 RESEARCH       DALLAS                20
+JAMES             950 SALES          CHICAGO               30
+FORD             3000 RESEARCH       DALLAS                20
+MILLER           1300 ACCOUNTING     NEW YORK              10
+
+
+----------- right outer join--------
+it gives result with the matched data of both tables and than remaining rows of right table and null for left tables.
+
+----------syntax 1
+select ename, sal, dname ,loc
+from emp e 
+right outer join
+dept d
+on (e.deptno = d.deptno);
+
+
+ENAME             SAL DNAME          LOC
+---------- ---------- -------------- -------------
+SMITH             800 RESEARCH       DALLAS
+ALLEN            1600 SALES          CHICAGO
+WARD             1250 SALES          CHICAGO
+JONES            2975 RESEARCH       DALLAS
+MARTIN           1250 SALES          CHICAGO
+BLAKE            2850 SALES          CHICAGO
+CLARK            2450 ACCOUNTING     NEW YORK
+SCOTT            3000 RESEARCH       DALLAS
+KING             5000 ACCOUNTING     NEW YORK
+TURNER           1500 SALES          CHICAGO
+ADAMS            1100 RESEARCH       DALLAS
+JAMES             950 SALES          CHICAGO
+FORD             3000 RESEARCH       DALLAS
+MILLER           1300 ACCOUNTING     NEW YORK
+                      OPERATIONS     BOSTON
+
+----------syntax 2
+select ename, sal, dname ,loc, d.deptno
+from emp e, dept d
+where e.deptno (+) = d.deptno;
+
+
+ENAME             SAL DNAME          LOC               DEPTNO
+---------- ---------- -------------- ------------- ----------
+SMITH             800 RESEARCH       DALLAS                20
+ALLEN            1600 SALES          CHICAGO               30
+WARD             1250 SALES          CHICAGO               30
+JONES            2975 RESEARCH       DALLAS                20
+MARTIN           1250 SALES          CHICAGO               30
+BLAKE            2850 SALES          CHICAGO               30
+CLARK            2450 ACCOUNTING     NEW YORK              10
+SCOTT            3000 RESEARCH       DALLAS                20
+KING             5000 ACCOUNTING     NEW YORK              10
+TURNER           1500 SALES          CHICAGO               30
+ADAMS            1100 RESEARCH       DALLAS                20
+JAMES             950 SALES          CHICAGO               30
+FORD             3000 RESEARCH       DALLAS                20
+MILLER           1300 ACCOUNTING     NEW YORK              10
+                      OPERATIONS     BOSTON                40
+
+15 rows selected.
+
+---left outer join----------
+t gives result with the matched data of both tables and than remaining rows of left table and null for right tables.
+
+----------syntax 1
+
+select ename, sal, dname ,loc
+from emp e 
+left outer join
+dept d
+on (e.deptno = d.deptno);
+
+ENAME             SAL DNAME          LOC
+---------- ---------- -------------- -------------
+MILLER           1300 ACCOUNTING     NEW YORK
+KING             5000 ACCOUNTING     NEW YORK
+CLARK            2450 ACCOUNTING     NEW YORK
+FORD             3000 RESEARCH       DALLAS
+ADAMS            1100 RESEARCH       DALLAS
+SCOTT            3000 RESEARCH       DALLAS
+JONES            2975 RESEARCH       DALLAS
+SMITH             800 RESEARCH       DALLAS
+JAMES             950 SALES          CHICAGO
+TURNER           1500 SALES          CHICAGO
+BLAKE            2850 SALES          CHICAGO
+MARTIN           1250 SALES          CHICAGO
+WARD             1250 SALES          CHICAGO
+ALLEN            1600 SALES          CHICAGO
+
+
+----------syntax 2
+
+select ename, sal, dname ,loc, d.deptno
+from emp e, dept d
+where e.deptno = d.deptno(+);
+
+ENAME             SAL DNAME          LOC               DEPTNO
+---------- ---------- -------------- ------------- ----------
+MILLER           1300 ACCOUNTING     NEW YORK              10
+KING             5000 ACCOUNTING     NEW YORK              10
+CLARK            2450 ACCOUNTING     NEW YORK              10
+FORD             3000 RESEARCH       DALLAS                20
+ADAMS            1100 RESEARCH       DALLAS                20
+SCOTT            3000 RESEARCH       DALLAS                20
+JONES            2975 RESEARCH       DALLAS                20
+SMITH             800 RESEARCH       DALLAS                20
+JAMES             950 SALES          CHICAGO               30
+TURNER           1500 SALES          CHICAGO               30
+BLAKE            2850 SALES          CHICAGO               30
+MARTIN           1250 SALES          CHICAGO               30
+WARD             1250 SALES          CHICAGO               30
+ALLEN            1600 SALES          CHICAGO               30
+
+------------full outer join------------------
+it's the combination of both left and right outer join
+
+select ename, sal, dname ,loc
+from emp e 
+full outer join
+dept d
+on (e.deptno = d.deptno);
+
+ENAME             SAL DNAME          LOC
+---------- ---------- -------------- -------------
+MILLER           1300 ACCOUNTING     NEW YORK
+KING             5000 ACCOUNTING     NEW YORK
+CLARK            2450 ACCOUNTING     NEW YORK
+FORD             3000 RESEARCH       DALLAS
+ADAMS            1100 RESEARCH       DALLAS
+SCOTT            3000 RESEARCH       DALLAS
+JONES            2975 RESEARCH       DALLAS
+SMITH             800 RESEARCH       DALLAS
+JAMES             950 SALES          CHICAGO
+TURNER           1500 SALES          CHICAGO
+BLAKE            2850 SALES          CHICAGO
+MARTIN           1250 SALES          CHICAGO
+WARD             1250 SALES          CHICAGO
+ALLEN            1600 SALES          CHICAGO
+                      OPERATIONS     BOSTON
+
+
+-------non equi join-------------------------------
+use operator > < !=
+display the pair or employess doing the same job deptartments
+
+select a.ename,a.job,a.deptno,b.ename,b.job,b.deptno
+from emp a,emp b
+where a.deptno!=b.deptno and a.job=b.job;
+
+
+ENAME      JOB           DEPTNO ENAME      JOB           DEPTNO
+---------- --------- ---------- ---------- --------- ----------
+MILLER     CLERK             10 SMITH      CLERK             20
+JAMES      CLERK             30 SMITH      CLERK             20
+CLARK      MANAGER           10 JONES      MANAGER           20
+BLAKE      MANAGER           30 JONES      MANAGER           20
+CLARK      MANAGER           10 BLAKE      MANAGER           30
+JONES      MANAGER           20 BLAKE      MANAGER           30
+BLAKE      MANAGER           30 CLARK      MANAGER           10
+JONES      MANAGER           20 CLARK      MANAGER           10
+MILLER     CLERK             10 ADAMS      CLERK             20
+JAMES      CLERK             30 ADAMS      CLERK             20
+MILLER     CLERK             10 JAMES      CLERK             30
+ADAMS      CLERK             20 JAMES      CLERK             30
+SMITH      CLERK             20 JAMES      CLERK             30
+JAMES      CLERK             30 MILLER     CLERK             10
+ADAMS      CLERK             20 MILLER     CLERK             10
+SMITH      CLERK             20 MILLER     CLERK             10
+
+
+----------------self join------------------
+joining the table with itself
+there has to be 2 colmns which are related
+self join can not be performed on all the tables
+it takes more time to evaluate self join
+
+----------------------display name of the employee and his manager name-
+
+select a.ename,b.ename mgr
+from emp a, emp b
+where a.mgr = b.empno;
+
+
+
+
+select a.ename,a.sal, b.ename mg_name,b.sal mg_sal
+from emp a, emp b
+where a.mgr = b.empno;
+
+ENAME             SAL MG_NAME        MG_SAL
+---------- ---------- ---------- ----------
+FORD             3000 JONES            2975
+SCOTT            3000 JONES            2975
+JAMES             950 BLAKE            2850
+TURNER           1500 BLAKE            2850
+MARTIN           1250 BLAKE            2850
+WARD             1250 BLAKE            2850
+ALLEN            1600 BLAKE            2850
+MILLER           1300 CLARK            2450
+ADAMS            1100 SCOTT            3000
+CLARK            2450 KING             5000
+BLAKE            2850 KING             5000
+JONES            2975 KING             5000
+SMITH             800 FORD             3000
+
+----------diff between co related sub query and joins-----
+we can not display data from 2nd replica in co related subquery while in case of join it is possible. 
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+====================================================================================================================================================================
+
+
+====================================PL/SQL===========================================
+=====================================================================================
+procedural language structured query language 
+
+features of PL/SQL
+1 we can create variables,constants, defaults
+2 reusability of the code
+3 exception handling
+4 cursor can be declared
+5 create sub programs : stored procedures, functions , triggers
+6 increase the performence of the query using PL/SQL block
+
+block : 
+                   --------------------
+                   | insert            |
+                   |update             |
+                   |delete             |
+                   | select            |
+		   -------------------	DQL,DML commands
+
+set serveroutput on
+1. Declare
+	
+2. Begin
+	eg- dbms_output.put_line('sneha');
+	    dbms_output.put_line('kct');
+	    dbms_output.put_line('location mumbai');
+		
+3. Exception
+4. End;	 
+
+
+dbms_output- package
+out_line   - procedure
+bind variables : the variables which are declared in plsql block
+
+eg:
+declare
+a number(3):=222;
+b number(3):=222;
+c number(3):=222;
+begin
+	dbms_output.put_line('sum is: '||(a+b+c));
+end;
+declare
+a number(3):=222;
+b number(3):=222;
+c number(3):=222;
+begin
+c:=222;	
+dbms_output.put_line('sum is: '||(a+b+c));
+end;
+
+declare
+a number(3):=222;
+b number(3):=222;
+c number(3):=222;
+begin
+c:=22222;	
+dbms_output.put_line('sum is: '||(a+b+c));
+end;
+
+
+--------loops-----------
+1 while
+2 normal loop
+3 for loop
+
+---------normal loop
+1,2,3....10
+
+declare
+a number(2) :=1;
+begin
+      loop
+           dbms_output.put_line(a || ' times !!');
+           a:= a+1;
+           exit when a>10;
+      end loop;
+end;
+
+----------display your name 10 times
+declare
+a number(2) :=1;
+begin
+      loop
+           dbms_output.put_line(' Harinder !!');
+           a:= a+1;
+           exit when a>10;
+      end loop;
+end;
+
+-------while loop
+1,2,3....10
+
+declare
+a number(2) :=1;
+begin
+     while a<=10
+      loop
+           dbms_output.put_line(' Harinder !!');
+           a:= a+1;
+      end loop;
+end;
+
+
+-----for loop----
+1,2,3....10
+
+declare
+a number(4) := 20;
+
+begin
+    for i in 1..a
+      loop
+           dbms_output.put_line(i);
+       end loop;
+end;
+we cannot use increment statement in for loop 
+
+-------to check even no using for loop
+
+declare
+a number(4) := 20;
+b number(4) := 1;
+begin
+    for i in b..a
+      loop
+         if(mod(i,2)=0) then
+           dbms_output.put_line(i);
+         end if;   
+      end loop;
+end;
+-------to check odd no using for loop
+declare
+a number(4) := 20;
+b number(4) := 1;
+begin
+    for i in b..a
+      loop
+         if(mod(i,2)!=0) then
+           dbms_output.put_line(i);
+         end if;   
+      end loop;
+end;
+
+-------to reverse no using for loop
+declare
+a number(4) := 20;
+b number(4) := 1;
+begin
+    for i in reverse b..a
+      loop
+         if(mod(i,2)!=0) then
+           dbms_output.put_line(i);
+         end if;   
+      end loop;
+end;
+
+
+----- store salary of smith  in a variable
+declare
+vsal number(7,2);
+vcomm number(7,2);
+vhire date;
+vmgr number(5);
+begin
+   select sal, comm, hiredate,mgr into vsal, vcomm, vhire,vmgr from emp where ename='SMITH';
+       dbms_output.put_line(' sal of smith is ' || vsal);
+       dbms_output.put_line(' comm of smith is ' || vcomm);
+       dbms_output.put_line(' hiredate of smith is ' || vhire);
+       DBMS_output.put_line(' mgr of smith is ' || vmgr);
+end;
+
+------getting value by user---
+---1 way
+declare
+
+vsal number(7,2);
+vcomm number(7,2);
+vhire date;
+vmgr number(5);
+vename varchar2(20);
+begin
+vename := '&ename';
+   select sal, comm, hiredate,mgr into vsal, vcomm, vhire,vmgr from emp 
+where ename=vename;
+       dbms_output.put_line(' sal of' || vename || 'is ' || vsal);
+       dbms_output.put_line(' comm of ' || vename || ' is ' || vcomm);
+       dbms_output.put_line(' hiredate of ' || vename || ' is ' || vhire);
+       dbms_output.put_line(' mgr of ' || vename || 'is ' || vmgr);
+end;
+
+
+---2 way
+declare
+
+vsal number(7,2);
+vcomm number(7,2);
+vhire date;
+vmgr number(5);
+begin
+   select sal, comm, hiredate,mgr into vsal, vcomm, vhire,vmgr from emp 
+where ename='&vename';
+       dbms_output.put_line(' sal of is ' || vsal);
+       dbms_output.put_line(' comm of  is ' || vcomm);
+       dbms_output.put_line(' hiredate of  is ' || vhire);
+       dbms_output.put_line(' mgr of is ' || vmgr);
+end;
+
+----------data types
+%type
+%rowtype
+
+--------%type
+vsal emp.sal%type ;
+ V    T   C
+
+
+declare
+vsal emp.sal%TYPE ;
+vcomm emp.comm%type;
+vmgr emp.mgr%type;
+begin
+   select sal, comm into vsal, vcomm from emp 
+where ename='SMITH';
+       dbms_output.put_line(' sal of  SMITH is ' || vsal);
+       dbms_output.put_line(' comm of Smith is ' || vcomm);
+       dbms_output.put_line(' mgr of Smith is ' || vmgr);
+end;
+
+dis adv : if there are 20 variables in table so we need to declare 20 variables it's time taking.
+ 
+
+-----------%rowtype
+vrec emp%rowtype ;
+
+it stores entire row of a table in a single variable.
+
+-----------------------------------------------------
+|empno | ename  | sal |hire date | comm    | deptno |
+------------------------------------------------------
+vrec stores all the values of row .
+
+declare
+vrec emp%rowtype ;
+begin
+   select *  into vrec from emp where ename='SMITH';
+       dbms_output.put_line(' sal of  SMITH is ' || vrec.sal);
+       dbms_output.put_line(' comm of Smith is ' || vrec.comm);
+       dbms_output.put_line(' mgr of Smith is ' || vrec.mgr);
+       dbms_output.put_line(' hiredate of Smith is ' || vrec.hiredate);
+       dbms_output.put_line(' deptno of Smith is ' || vrec.deptno);
+       dbms_output.put_line(' job of Smith is ' || vrec.job);
+end;
+
+ 
+
+=========================================================================================
+----------------------Assignment table 1-------------
+
+a. Table:-  Client_master
+
+Create table client_master (
+Client_no varchar2(6) constraint clientno_pk primary key 
+Constraint clientno_ck check (Client_no like'c%'),
+name varchar2(20) not null,
+address1 varchar2(30),
+address2 varchar2(30),
+city varchar2(15),
+state varchar2(15),
+pincode number(6),
+bal_due number(10,2)
+);
+
+b.	Table Name: product_master
+
+create table product_master (
+product_no varchar2(6) constraint productno_pk primary key
+constraint productno_ck check (product_no like'p%'),
+description varchar2(50) not null,
+profit_percent number(3,2) not null,
+unit_measure varchar2(10) not null ,
+qty_on_hand number(7) not null,
+record_lvl number(8) not null,
+sell_price number(8,2) not null
+constraint sellprice_ck check (sell_price>0),
+cost_price number(8,2) not null
+constraint costprice_ck check (cost_price>0)
+);
+
+insert into table1
+
+insert into client_master(Client_no,name,city,state,pincode, bal_due) values ('c00002','Vandana Saitwal','Madras','Tamil Nadu',780001,0);
+insert into client_master(Client_no,name,city,state,pincode, bal_due) values ('c00001','Ivan Bayross','Bombay','Maharashtra',400054,15000);
+insert into client_master(Client_no,name,city,state,pincode, bal_due) values ('c00003','Pramada Jaguste','Bombay','Maharashtra',400057,5000);
+
+
+
+insert into table 2
+insert into product_master (product_no,description,profit_percent,unit_measure,qty_on_hand,record_lvl,sell_price, cost_price) values('p00001','1.44 Floppies',5,'Piece',100,20,525,500);
+insert into product_master (product_no,description,profit_percent,unit_measure,qty_on_hand,record_lvl,sell_price, cost_price) values('p00002','Monitors',6,'Piece',10,3,12000,11280);
+insert into product_master (product_no,description,profit_percent,unit_measure,qty_on_hand,record_lvl,sell_price, cost_price) values('p06734','Mouse',5,'Piece',20,5,1050,1000);
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+===============================Assignment table 2======================
+
+
+create table salesman_master(
+salesman_no varchar2(6) constraint salesmanno_pk primary key
+constraint salesmanno_ck check (salesman_no like's%'),
+salesman_name varchar2(20) not null,
+Address1 varchar2(30) not null,
+Address2 varchar2(30),
+city varchar2(20),
+pincode varchar2(6),
+state varchar2(20),
+sal_amt number(8,2) not null
+constraint salamt_ck check (sal_amt >0),
+tgt_to_get number(6,2) not null
+constraint tgttoget_ck check (tgt_to_get >0),
+ytd_sales number(6,2) not null,
+remarks varchar2(60)
+);
+
+Salesman_ no	Salesman_ name	Address1	Address2	City	Pin code	State	sal_amt	Tgt_to Get	Ytd sales	Remarks
+S00001	Kiran	A/14	Worli	Bombay	400002	MAH	3000	100	50	Good
+S00002	Manish	65	Nariman	Bombay	400001	MAH	3000	200	100	Good
+S00003	Ravi	P-7	Bandra	Bombay	400032	MAH	3000	200	100	Good
+ S00004	Ashish	A/5	Juhu	Bombay	400044	MAH	3500	200	150	Good
+
+insert into salesman_master(salesman_no,salesman_name,Address1,Address2,city,pincode,state,sal_amt,tgt_to_get,ytd_sales,remarks) 
+values('s00001','Kiran','A/14','Worli','Bombay','400002','MAH',3000,100,50,'Good'); 
+insert into salesman_master(salesman_no,salesman_name,Address1,Address2,city,pincode,state,sal_amt,tgt_to_get,ytd_sales,remarks) 
+values('s00002','Manish','65','Nariman','Bombay','400002','MAH',3000,200,100,'Good'); 
+insert into salesman_master(salesman_no,salesman_name,Address1,Address2,city,pincode,state,sal_amt,tgt_to_get,ytd_sales,remarks) 
+values('s00003','Ravi','P-7','Bndra','Bombay','400032','MAH',3000,200,100,'Good'); 
+insert into salesman_master(salesman_no,salesman_name,Address1,Address2,city,pincode,state,sal_amt,tgt_to_get,ytd_sales,remarks) 
+values('s00004','Ashish','A/5','Juhu','Bombay','400044','MAH',3500,200,150,'Good'); 
+
+
+
+create table sales_order (
+s_order_no varchar2(6) constraint sorderno_pk primary key
+constraint sorderno_ck check (s_order_no like'O%'),
+s_order_date date,
+Client_no varchar(6) constraint clientno_fk references client_master(Client_no),
+dely_addr varchar2(25),
+salesman_no varchar(6) constraint salesmanno_fk references salesman_master(salesman_no),
+dely_type char(1) default 'F'
+constraint delytype_ck check(dely_type in('P','F')),
+billed_yn char(1) default 'N'
+constraint billedyn_ck check(billed_yn in('Y','N')),
+dely_date date ,
+order_status varchar2(10) constraint orderstatus_ck check(order_status in('in process','Fulfilled','BackOrder','Canceled')),
+constraint delydate_ck check (dely_date > s_order_date )
+);
+
+
+insert into sales_order(s_order_no,s_order_date,Client_no,dely_type,billed_yn,salesman_no,dely_date,order_status)
+ values('O19001','12-Jan-1996','c00001','F','N','s00001','20-Jan-1996','in process') ;
+insert into sales_order(s_order_no,s_order_date,Client_no,dely_type,billed_yn,salesman_no,dely_date,order_status) 
+values('O19002','25-Jan-1996','c00002','P','N','s00002','27-Jan-1996','Canceled') ;
+insert into sales_order(s_order_no,s_order_date,Client_no,dely_type,billed_yn,salesman_no,dely_date,order_status) 
+values('O46865','18-Feb-1996','c00003','F','Y','s00003','20-Feb-1996','Fulfilled') ;
+
+
+
+create table sales_order_details(
+s_order_no varchar2(6) constraint sorderno_fk references sales_order(s_order_no),
+product_no varchar2(6) constraint productno_fk references product_master(product_no),
+qty_ordered number(8),
+qty_disp number(8),
+product_rate number(10,2)
+);
+
+
+s_order_no	product_no	Qty ordered	qty_Disp	Product rate
+O19001	P00001	4	4	525
+O19001	P07965	2	1	8400
+O19001	P07885	2	1	5250
+O19002	P00001	10	0	525
+O46865	P07868	3	3	3150
+O46865	P07885	3	1	5250
+O46865	P00001	10	10	525
+O46865	P03453	4	4	1050
+O19003	P03453	2	2	1050
+O19003	P06734	1	1	12000
+O46866	P07965	1	0	8400
+O46866	P07975	1	0	1050
+O10008	P00001	10	5	525
+O10008	P07975	5	3	1050
+insert into sales_order_details(s_order_no,product_no,qty_ordered,qty_disp,product_rate ) values('O19001','p00001',4,4,525);
+insert into sales_order_details(s_order_no,product_no,qty_ordered,qty_disp,product_rate ) values('O46865','p07868',21,10,840);
+insert into sales_order_details(s_order_no,product_no,qty_ordered,qty_disp,product_rate ) values('O19002','p00001',10,0,525);
+
+
+
+
+
+
+
