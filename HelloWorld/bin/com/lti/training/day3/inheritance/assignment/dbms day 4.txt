@@ -1,0 +1,732 @@
+----- sal smith store in var check whether sal < 1000 update sal +5000, display sal updated 
+
+declare 
+vsal emp.sal%type;
+begin
+
+select sal into vsal from emp e where ename='SMITH';
+ if(vsal<1000) then
+       
+      vsal:= vsal+500;
+      update emp set sal = vsal where ename='SMITH';
+      dbms_output.put_line('salary updated');
+      dbms_output.put_line('updated salary is ' || vsal);
+        end if;
+end;
+
+---eg2 
+--- accept the name of emp by user,
+ store sal of emp in variable, if the salary is>=4000, increment sal by 800,
+ if sal is >= 3000 ,  increment sal by 500,
+else increment sal by 300
+
+---1
+if condition then
+
+..
+...
+end if;
+
+--2
+if condition then
+
+...
+...
+else
+..
+...
+end if;
+
+---3
+if condition then
+....
+...
+elsif condition then
+
+...
+...
+eslif condition then
+
+
+else
+
+end if;
+
+
+ accept the name of emp by user,
+ store sal of emp in variable, if the salary is>=4000, increment sal by 800,
+ if sal is >= 3000 ,  increment sal by 500,
+else increment sal by 300
+
+
+declare 
+vsal emp.sal%type;
+vname emp.ename%type;
+begin
+vname := '&ename';
+select sal into vsal from emp where ename=vname;
+ if (vsal>=4000) then       
+      vsal:= vsal+800;
+  update emp set sal = vsal where ename=vname;
+ 
+ elsif (vsal>3000) then
+    vsal:= vsal+500;
+        update emp set sal = vsal where ename=vname;
+  else
+       vsal:= vsal+300;
+        update emp set sal = vsal where ename=vname;
+   end if;
+      dbms_output.put_line('salary updated');
+      dbms_output.put_line('updated salary is ' || vsal);
+end;
+      
+
+----blocks
+            
+
+                BLOCKS
+                    /\
+                   /  \
+      no name--- -/    \---  named
+                 /      \
+            Anonymous    named
+              block        block
+
+---Anonymous 
+no name 
+no reusability of code
+ to convert it into named block use lines
+
+create or replace procedure proces1 
+as
+
+---named block
+has a name
+reusability of code can be done
+1 stored procedure
+2 function
+3 trigger
+
+memeory 
+-----------------------------
+|                	     |
+|    proce1     pcode        |
+|                COMPILED    |  
+|                 CODE	     |
+|              	 	     |
+------------------------------
+
+---stored procedure
+create a stored procedure to check sal of smith if the sal < 2000 display a message 'low sal
+create or replace procedure proces1 
+as
+vsal emp.sal%type;
+begin
+
+select sal into vsal from emp where ename='SMITH;
+ if (vsal<2000) then       
+            dbms_output.put_line('low salary ');
+      dbms_output.put_line('updated salary is ' || vsal);
+end;
+
+
+
+to execute
+exec process1
+or  execute proce1
+
+----------
+create or replace procedure proces1 
+as
+vsal emp.sal%type;
+begin
+
+select sal into vsal from emp where ename='SMITH';
+ if (vsal<2000) then       
+            dbms_output.put_line('low salary ');
+    end if;
+end;
+
+------PCODE : compiled code
+
+
+_______ Modularized programming :
+creating function, procedure
+
+=-----create a procedure to check comm of smith if comm is null then delkete the record
+
+create or replace procedure proces2 
+as
+vcomm emp.comm%type;
+begin
+
+select comm into vcomm from emp where ename='SMITH';
+ if vcomm is null  then       
+     delete from emp where ename ='SMITH'; 
+     dbms_output.put_line('data deleted ');
+   end if;
+ end;
+
+show err  - to show the error.
+
+-----parameters
+1 in       : input
+2 out      : output
+3 in out   : input and output
+
+
+---------- to accept a name from user and check comm, if comm is null, delete rec
+create or replace procedure in_proces2(pename varchar2) 
+as
+vcomm emp.comm%type;
+begin
+
+select comm into vcomm from emp where ename=pename;
+ if vcomm is null  then       
+     delete from emp where ename =pename; 
+     dbms_output.put_line('data deleted ');
+   end if;
+ end;
+
+----------to exec
+exec in_proces2('MILLER');
+
+
+
+--------------using two parameter
+
+create or replace procedure in_proces2(pename varchar2, psal number) 
+as
+vcomm emp.comm%type;
+begin
+
+select comm into vcomm from emp where ename=pename;
+ if vcomm is null  then       
+     delete from emp where ename =pename; 
+     delete from emp where sal =psal;
+     dbms_output.put_line('data deleted ');
+   end if;
+ end;
+      
+
+--- to accept a empno and the incr value from the user,  check the sal for the emp, if sal < 3000, update sal by incr
+
+create or replace procedure in_proces2(peno number, pincr number) 
+as
+vsal emp.sal%type;
+begin
+
+select sal into vsal from emp where empno=peno;
+ if vsal<3000   then 
+  vsal := vsal + pincr; 
+   update emp set sal = vsal where empno=peno;    
+     dbms_output.put_line('salary incremented ');
+   end if;
+ end;
+
+----call procedure with in procedure
+
+create or replace procedure in_proces2(peno number, pincr number) 
+as
+vsal emp.sal%type;
+begin
+proces2;
+select sal into vsal from emp where empno=peno;
+ if vsal<3000   then 
+  vsal := vsal + pincr; 
+   update emp set sal = vsal where empno=peno;    
+     dbms_output.put_line('salary incremented ');
+   end if;
+ end;
+
+
+& is a bad practice to get the input in case of named block.
+
+
+
+------out parameter
+Create a procedure to accept the empno from the user and return the net salary
+
+i/p  : empno
+o/p  : netsal
+
+create or replace procedure out_demo(peno in number, pnet out number)
+as
+begin
+select sal+nvl(comm,0) into pnet from emp where empno=peno;
+end;
+
+----to exec
+exec out_demo(7499, pnet)   ---err  because we need to declare the pnet as it is a variable.
+
+correct way to execute
+
+declare
+pnet number(7,2);
+begin
+out_demo(7499,pnet);
+dbms_output.put_line('net salary is : ' || pnet);
+end;
+
+
+----create a p;rocedure to accept empno from user and return sal,comm,netsal and annual sal
+
+create or replace procedure in_proces2(peno in number, psal out number, pcomm out number, pnet out number ,pasal out number) 
+as
+begin
+select sal, comm ,sal+nvl(comm,0),(sal + nvl(comm,0)) * 12  into psal,pcomm,pnet,pasal from emp where empno=peno;
+end;
+
+
+execute---
+
+declare 
+psal number(7,2);
+pcomm number (7,2);
+pnet number(7,2);
+pasal number(7,2);
+
+begin 
+ in_proces2(7499,psal,pcomm,pnet,pasal);
+dbms_output.put_line('salary is : ' || psal);
+dbms_output.put_line('commision is : ' || pcomm);
+dbms_output.put_line('net salary is : ' || pnet);
+dbms_output.put_line('annual salary is : ' || pasal);
+end;
+
+
+=========drop a procedure
+drop procedure procedure_name;
+
+
+
+=========function 
+it is a subprogram
+it alwayes returns a value
+it always has at least 1 input parameter
+can perform only dql
+dml can not be performed
+
+--------eg create a function to display the cube of a no
+
+create or replace function fun_cube (a number)
+return number
+as
+begin
+return a*a*a;
+end;
+
+----to execute function
+select fun_cube(5) from dual;
+
+=========drop a function
+drop function function_name;
+
+--create a function to accept the employee number from the user and return net salary
+
+create or replace function fun_salary (feno in number)
+return number
+as
+vnet number(10,2);
+begin
+select sal+nvl(comm,0) into vnet from emp where empno=feno;  
+return vnet;
+end;
+
+--exec
+select fun_salary(7499) from dual;
+
+===============create a function to accept the employee number from the user and return salary,comm,net salary,
+---creation
+create or replace function fun_salary (feno in number, pcomm out number, psal out number)
+return number
+as
+vnet number(10,2);
+begin
+select sal+nvl(comm,0), comm , sal  into vnet , pcomm , psal from emp where empno=feno;  
+return vnet;
+end;
+
+---execution
+declare 
+psal number(7,2);
+pcomm number (7,2);
+vnet number(7,2);
+begin 
+ vnet := fun_salary(7499,pcomm,psal);
+dbms_output.put_line('salary is : ' || psal);
+dbms_output.put_line('commision is : ' || pcomm);
+dbms_output.put_line('net salary is : ' || vnet);
+end;
+
+we can call a procedure inside a function as well as inside a procedure [vice versa] - Everything is possible
+
+package : collection of related procedures, function,variable,default,exception,cursor
+pack1 : fun1, fun2,proce1,proce2
+instead of granting procedures and functions separately, we can grant a package 
+onl one command need to be given
+
+-----Exception handling
+handling the error
+user define derror messages can be displayed
+
+Types
+1. pre defined exception
+2. user defined exception
+
+-----pre defined excetions
+are already defined in oracle
+
+---eg1
+declare
+vsal number(10,2);
+begin
+select sal into vsal from emp where ename = 'Priti';
+dbms_output.put_line('salary is :' || vsal);
+exception
+when no_data_found then
+dbms_output.put_line('there is no such data available');
+
+end;
+
+---eg2  too_many_rows
+
+declare
+vsal number(10,2);
+begin
+select sal into vsal from emp ;
+dbms_output.put_line('salary is :' || vsal);
+exception
+when too_many_rows then
+dbms_output.put_line('That statement returns more than one value and single variable can not store one value in variable');
+end;
+
+---eg3---value_error
+declare
+a number(2);
+begin
+a:=321314;
+dbms_output.put_line(a);
+exception
+when value_error then
+dbms_output.put_line('the size of the variable is greater');
+end;
+
+---eg4  zero_divide
+declare
+a number(3):=22;
+res number(2);
+begin
+res:=a/0;
+dbms_output.put_line(res);
+exception
+when zero_divide then
+dbms_output.put_line('we can not divide a no by 0');
+end;
+
+---eg5 more than one error
+declare
+a number(3):=22;
+res number(2);
+begin
+res:=a/0;
+dbms_output.put_line(res);
+a:=3324;
+exception
+when zero_divide then
+dbms_output.put_line('we can not divide a no by 0');
+when value_error then
+dbms_output.put_line('the size of the variable is greater');
+end;
+
+in this case the error catched earlier will be displayed
+
+---eg6 others
+
+declare
+a number(3):=22;
+res number(2);
+begin
+res:=a/0;
+dbms_output.put_line(res);
+exception
+when others then
+dbms_output.put_line('there is an error');
+end;
+
+
+======== properties of error
+1. error code
+2. error message
+3. error number
+
+---eg
+declare
+vsal number(10,2);
+begin
+select sal into vsal from emp where ename = 'Priti';
+dbms_output.put_line('salary is :' || vsal);
+exception
+when no_data_found then
+dbms_output.put_line(sqlcode);
+dbms_output.put_line(sqlerrm);
+dbms_output.put_line('there is no such data available');
+end;
+
+---eg
+sqlcode : display the error code
+sqlerrm : display the error message 
+ 
+
+declare
+vsal number(10,2);
+a number(4);
+begin
+a:= 75673;
+exception
+when value_error then
+dbms_output.put_line(sqlcode);
+dbms_output.put_line(substr(sqlerrm,1,50));
+end;
+
+====user defined exception
+it is defined by the user
+user need to declare and handle the exception
+
+steps:
+1. declare
+2. write if condition
+3. raise
+4. handle in exception section
+
+
+------- check sal for smith, if sal<3000 raise an exception "lowsal"
+
+declare
+vsal number(10,2);
+lowsal exception;
+begin
+select sal into vsal from emp where ename='SMITH';
+if vsal<3000 then
+raise lowsal;
+end if;
+exception
+when lowsal then
+dbms_output.put_line('the salary is very low !!');
+end;
+
+----check sal for king, if sal>4500 raise an exception "highsal"
+
+
+declare
+vsal number(10,2);
+highsal exception;
+begin
+select sal into vsal from emp where ename='KING';
+if vsal>4500 then
+raise highsal;
+end if;
+exception
+when highsal then
+dbms_output.put_line('the salary is veryhigh !!');
+end;
+
+
+=========================================================
+===========Trigger   [IMP]
+
+it is executed as and when the dml (insert, update, delete) operation occurs
+it is subprogram
+it is executed automatically
+no need to give a command to execute a trigger
+
+use of trigger
+1. use for security purpose
+2. use to restrict the acces of the table
+3. use for auditing purpose
+4. used to redirect the data
+5. use to check the complex conditions
+
+types of trigger
+1 insert trigger
+2 update trigger
+3 delete trigger 
+4 row level trigger
+5 statement trigger
+6 before trigger
+7 after trigger 
+
+.....
+---------------delete trigger----------
+
+CREATE TABLE EMP4 (
+empno int,
+ename varchar2(20),
+sal number(10,2)
+);
+
+---eg1  do not allow the user to delete the record
+create or replace trigger tr1
+before delete on emp4
+begin
+raise_application_error(-20101,'can not delete the record !!!!!');
+end;
+
+parameters
+1 : err no     : -20001 to -20999
+2 : err msg    : 
+
+insert into emp4 values(01,'Ria',25000);
+insert into emp4 values(02,'Ram',27000);
+insert into emp4 values(03,'Rohan',29000);
+
+delete from emp4
+where ename='Ria';
+
+msg: ERROR at line 1:
+ORA-20101: can not delete the record !!!!!
+ORA-06512: at "HR.TR1", line 2
+ORA-04088: error during execution of trigger 'HR.TR1'
+
+---------disable trigger
+alter trigger tr1 disable;
+alter trigger tr1 enable;
+
+----------------------------------------------------------------------
+
+------eg update, insert, delete trigger
+
+create or replace trigger tr2
+before delete or update or insert on emp4
+begin
+raise_application_error(-20101,'can not cannot perform dml information !!!!!');
+end;
+
+
+---eg redirect the information
+
+
+emp--->sal                sal_history----->
+ 
+---predicates
+1. inserting
+2. updating
+3. deleting
+4. :old.saal
+5. :new.sal
+
+create table sal_history (
+empno int,
+old_sal number(10,2),
+new_sal number(10,2)
+);
+
+create or replace trigger tr3
+after update of sal on emp for each row
+begin
+  if updating then
+      insert into sal_history values(:old.empno , :old.sal,:new.sal);
+  end if;
+end;
+
+for each row : means it update in each row of the table
+
+update emp 
+set sal=sal +1000
+where ename='SMITH';
+
+if FOR EACH is present, then it is a row level trigger
+Statement trigger is faster than row level trigger
+
+
+============================================================================================
+
+---------cursor-----------
+it is used to manipulate multiple records in a pl/sql block
+Each record is fetched separately
+cursor is dynamic allocation of memory
+
+--type of cursors
+1 implicit cursor
+2 explicit cursor
+
+--attributes of cursor  [IMP]
+1 %isopen	:T/F
+2 %found	:T/F
+3 %notfound	:T/F
+4 %rowcount	:RETURN NUMBER
+
+--steps  [IMP]
+1 declare
+2 open
+3 fetch
+4 close
+
+pl/sql block fails to fetch when they fetch multiple records
+
+
+------implicit cursor
+the name of implicit cursor is SQL
+it is used when the use performs dml operations
+it is used internaly by oracle
+
+----eg
+declare 
+begin
+insert into emp (empno,ename,sal,deptno) values (1156,'priti',2000,10);
+UPDATE EMP SET SAL=SAL+500  WHERE ENAME='ALLEN';
+  if SQL%found then
+      dbms_output.put_line('the implicit cursor is found !!!!');
+      dbms_output.put_line('count is  ' || SQL%rowcount);
+   end if;
+end;
+
+
+=====EXPLICIT CURSOR 
+it is defined by user
+user need to do all the operations of cursor : declare,open,fetch, close
+
+--attributes of cursor  [IMP]
+1 %isopen	:T/F
+2 %found	:T/F
+3 %notfound	:T/F
+4 %rowcount	:RETURN NUMBER
+
+--steps  [IMP]
+1 declare  : cursor c1 is select * from emp;
+(copy all record of emp table into cursor c1)
+All cursors are saved into ACTIVE RESULT SET/CONTEXT AREA
+2 open  : open c1; when we open cursor cursor c1 is filled 
+and pointer is set to the first record.
+3 fetch  : fetch c1 into vrec
+4 close  : close c1;
+
+---EG
+
+declare
+cursor c1 is select * from emp;
+vrec emp%rowtype;
+begin 
+   open c1;
+       loop 
+          fetch c1 into vrec;
+           exit when c1%notfound;
+
+if vrec.deptno=10 then
+ update emp set sal=sal*1.1 where empno=vrec.empno;
+end if;
+           dbms_output.put_line(vrec.ename || '   earning is  ' || vrec.sal);
+        end loop;
+    close c1;
+
+end; 
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,29 @@
+     joins and subquery
+
+
+Ans1.select ename,sal,dname from emp e,dept d where(e.deptno=d.deptno) and sal=(select min(sal) from emp);
+Ans2.select deptno, min(sal) from emp group by deptno;
+Ans3.select empno,ename,job,sal,deptno from emp where job='CLERK';
+Ans4.select * from emp where deptno=(select deptno from emp where ename='FORD');
+Ans5.select * from emp where deptno=(select deptno from emp where ename='WARD') and sal>(select sal from emp where ename='MARTIN');
+Ans6.select empno,ename,e.deptno,d.dname,d.loc from emp e,dept d where e.deptno=d.deptno;
+Ans7.select e.deptno,d.dname,e.ename from emp e,dept d where e.deptno=d.deptno;
+Ans8.select d.deptno,d.dname,e.ename from emp e,dept d where e.deptno(+)=d.deptno;
+Ans9.
+Ans10.
+Ans11.
+
+							joins
+
+Ans1.select description,qty_disp,dely_date from product_master p,sales_order_details sd,sales_order so;
+Ans2.select p.product_no,qty_disp from product_master p,sales_order_details sd;
+Ans3.select a.ename, b.ename from emp a, emp b where a.empno = b.mgr;
+Ans4.select a.ename, b.ename from emp a, emp b where a.empno = b.mgr order by a.ename;
+Ans5.
+Ans6.select distinct d.deptno from dept d,emp e;
+Ans7.select distinct d.deptno from dept d,emp e where e.deptno=d.deptno;
+Ans8.select * from emp where deptno=(select deptno from emp where ename='SMITH') and ename!='SMITH';
+Ans9.select * from emp where sal>( select avg(sal) from emp);
+Ans10.select deptno from emp;
+
+
