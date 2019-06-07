@@ -12,9 +12,9 @@ public class BankAccount {
 		this.balance = balance;
 	}
 	
-	public double withdraw(double amount) throws Exception{
+	public double withdraw(double amount) throws AccountException{
 		if (amount>balance) {
-			Exception e = new Exception("Insufficient balance!");
+			AccountException e = new AccountException("Insufficient balance!");
 			throw e;
 		}
 		
@@ -25,14 +25,18 @@ public class BankAccount {
 		}
 	public static void main(String[] args) {
 		
-		BankAccount bankAcc = new BankAccount(1234,"SDG",5000);
+		//BankAccount bankAcc = new BankAccount(1234,"SDG",5000);
+		BankAccount bankAcc=null;
 		try {
 			double balance = bankAcc.withdraw(6000);
 			System.out.println("Balance Left:"+balance);
 		}
 		
-		catch(Exception e) {
+		catch(AccountException e) {
 			System.out.println(e.getMessage());
+		}
+		finally {
+			System.out.println("finally is always executed");
 		}
 		
 	}
